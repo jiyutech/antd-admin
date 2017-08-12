@@ -31,7 +31,7 @@ module.exports = (webpackConfig, env) => {
   webpackConfig.plugins = webpackConfig.plugins.concat([
     new CopyWebpackPlugin([
       {
-        from: 'src/public',
+        from: 'src/assets/public',
         to: env === 'production' ? '../' : webpackConfig.output.outputPath,
       },
     ]),
@@ -61,14 +61,14 @@ module.exports = (webpackConfig, env) => {
 
   // Alias
   webpackConfig.resolve.alias = {
-    components: `${__dirname}/src/components`,
-    utils: `${__dirname}/src/utils`,
-    config: `${__dirname}/src/utils/config`,
-    enums: `${__dirname}/src/utils/enums`,
-    services: `${__dirname}/src/services`,
-    models: `${__dirname}/src/models`,
-    routes: `${__dirname}/src/routes`,
-    themes: `${__dirname}/src/themes`,
+    config: `${__dirname}/src/config/index`,
+    enums: `${__dirname}/src/config/enums`,
+    components: `${__dirname}/src/core/components`,
+    services: `${__dirname}/src/core/services`,
+    models: `${__dirname}/src/core/models`,
+    routes: `${__dirname}/src/core/routes`,
+    utils: `${__dirname}/src/core/utils`,
+    themes: `${__dirname}/src/core/themes`,
   }
 
   return webpackConfig

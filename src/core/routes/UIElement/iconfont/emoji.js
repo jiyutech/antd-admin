@@ -1,0 +1,8 @@
+import '../../../../assets/svg/emoji/vomiting.svg'
+import '../../../../assets/svg/emoji/smirking.svg'
+import '../../../../assets/svg/emoji/surprised.svg'
+import '../../../../assets/svg/emoji/unamused.svg'
+import '../../../../assets/svg/emoji/zombie.svg'
+import '../../../../assets/svg/emoji/tired.svg'
+import '../../../../assets/svg/emoji/tongue.svg'
+import '../../../../assets/svg/emoji/wink.svg'

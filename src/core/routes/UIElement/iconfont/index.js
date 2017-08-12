@@ -13,15 +13,15 @@ const flatIcons = ['home', 'user', 'timelimit', 'shopcart', 'message', 'remind',
 const localSVGIcons = ['vomiting', 'smirking', 'surprised', 'unamused', 'zombie', 'tired', 'tongue', 'wink']
 
 const localRequireSVGIcons = [
-  require('../../../svg/cute/congratulations.svg'),
-  require('../../../svg/cute/cry.svg'),
-  require('../../../svg/cute/kiss.svg'),
-  require('../../../svg/cute/leisurely.svg'),
-  require('../../../svg/cute/notice.svg'),
-  require('../../../svg/cute/proud.svg'),
-  require('../../../svg/cute/shy.svg'),
-  require('../../../svg/cute/sweat.svg'),
-  require('../../../svg/cute/think.svg'),
+  require('../../../../assets/svg/cute/congratulations.svg'),
+  require('../../../../assets/svg/cute/cry.svg'),
+  require('../../../../assets/svg/cute/kiss.svg'),
+  require('../../../../assets/svg/cute/leisurely.svg'),
+  require('../../../../assets/svg/cute/notice.svg'),
+  require('../../../../assets/svg/cute/proud.svg'),
+  require('../../../../assets/svg/cute/shy.svg'),
+  require('../../../../assets/svg/cute/sweat.svg'),
+  require('../../../../assets/svg/cute/think.svg'),
 ]
 
 const IcoPage = () => (<div className="content-inner">

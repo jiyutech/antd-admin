@@ -57,6 +57,7 @@
     "lint": "eslint --fix --ext .js src",
     "build": "roadhog build",
     "build:dll": "roadhog buildDll",
-    "build:new": "node version && roadhog build"
+    "build:new": "node version && roadhog build",
+    "deploy": "scp -r dist root@121.40.192.30:/var/www/dev/antd-admin"
   }
 }

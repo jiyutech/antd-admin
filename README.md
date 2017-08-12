@@ -160,8 +160,8 @@ dashboard设计稿：<https://dribbble.com/shots/3108122-Dashboard-Admin> （已
 
 web
 
-![](assets/4.2.1-demo-1.gif)
+![](src/assets/4.2.1-demo-1.gif)
 
 移动
 
-![](assets/4.2.1-demo-2.gif)
+![](src/assets/4.2.1-demo-2.gif)

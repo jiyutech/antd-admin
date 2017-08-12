@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
-import { color } from 'utils'
+import { color } from 'config'
 import styles from './comments.less'
 
 const status = {
