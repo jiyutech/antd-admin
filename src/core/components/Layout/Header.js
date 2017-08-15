@@ -35,8 +35,6 @@ const Header = ( layoutProps ) => {
     onMenuItemSelected: onSideMenuItemSelected,
   }
 
-  console.error(loginInfo);
-
   return (
     <div className={styles.header}>
       {isMobileNavbarMode

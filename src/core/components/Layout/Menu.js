@@ -73,7 +73,7 @@ class Menus extends React.Component {
     let currentMenuIdStack = currentMenuStack.map(item => item.id)
 
     const responsiveProps = isSiderCollapsed ? {} : {
-      openKeys: this.state.openKeys
+      defaultOpenKeys: this.state.openKeys
     }
 
     return (
@@ -82,7 +82,7 @@ class Menus extends React.Component {
         mode={isSiderCollapsed ? 'vertical' : 'inline'}
         theme={isThemeDark ? 'dark' : 'light'}
         onOpenChange={this.handleMenuOpen}
-        selectedKeys={currentMenuIdStack}
+        defaultSelectedKeys={currentMenuIdStack}
         onSelect={onMenuItemSelected}
         inlineCollapsed={isSiderCollapsed}
       >
