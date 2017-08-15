@@ -60,8 +60,10 @@ class Menus extends React.Component {
 
         return (
           <Menu.Item key={item.id}>
-            {item.icon && <Icon type={item.icon} />}
-            <span>{item.name}</span>
+            <Link to={item.route}>
+              {item.icon && <Icon type={item.icon} />}
+              <span>{item.name}</span>
+            </Link>
           </Menu.Item>
         )
       })
