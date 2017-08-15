@@ -1,128 +1,112 @@
 /* global location */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon } from 'antd'
+import { Menu, Icon, Tooltip } from 'antd'
 import { Link } from 'dva/router'
 import { arrayToTree, queryArray } from 'utils'
 import pathToRegexp from 'path-to-regexp'
 
-const Menus = ({ siderFold, darkTheme, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
-  // 生成树状
-  const menuTree = arrayToTree(menu.filter(_ => _.mpid !== '-1'), 'id', 'mpid')
-  const levelMap = {}
 
-  // 递归生成菜单
-  const getMenus = (menuTreeN, siderFoldN) => {
-    return menuTreeN.map((item) => {
-      if (item.children) {
-        if (item.mpid) {
-          levelMap[item.id] = item.mpid
-        }
-        return (
-          <Menu.SubMenu
-            key={item.id}
-            title={<span>
-              {item.icon && <Icon type={item.icon} />}
-              {(!siderFoldN || !menuTree.includes(item)) && item.name}
-            </span>}
-          >
-            {getMenus(item.children, siderFoldN)}
-          </Menu.SubMenu>
-        )
-      }
-      return (
-        <Menu.Item key={item.id}>
-          <Link to={item.route}>
-            {item.icon && <Icon type={item.icon} />}
-            {(!siderFoldN || !menuTree.includes(item)) && item.name}
-          </Link>
-        </Menu.Item>
-      )
+class Menus extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      openKeys: this.props.currentMenuStack ? this.props.currentMenuStack.map(item => item.id) : []
+    };
+  }
+
+  handleMenuOpen = (openKeys) => {
+    this.setState({
+      openKeys: this.props.isSiderCollapsed ? [] : openKeys
     })
   }
-  const menuItems = getMenus(menuTree, siderFold)
 
-  // 保持选中
-  const getAncestorKeys = (key) => {
-    let map = {}
-    const getParent = (index) => {
-      const result = [String(levelMap[index])]
-      if (levelMap[result[0]]) {
-        result.unshift(getParent(result[0])[0])
-      }
-      return result
-    }
-    for (let index in levelMap) {
-      if ({}.hasOwnProperty.call(levelMap, index)) {
-        map[index] = getParent(index)
-      }
-    }
-    return map[key] || []
-  }
-
-  const onOpenChange = (openKeys) => {
-    const latestOpenKey = openKeys.find(key => !navOpenKeys.includes(key))
-    const latestCloseKey = navOpenKeys.find(key => !openKeys.includes(key))
-    let nextOpenKeys = []
-    if (latestOpenKey) {
-      nextOpenKeys = getAncestorKeys(latestOpenKey).concat(latestOpenKey)
-    }
-    if (latestCloseKey) {
-      nextOpenKeys = getAncestorKeys(latestCloseKey)
-    }
-    changeOpenKeys(nextOpenKeys)
-  }
-
-  let menuProps = !siderFold ? {
-    onOpenChange,
-    openKeys: navOpenKeys,
-  } : {}
-
-
-  // 寻找选中路由
-  let currentMenu
-  let defaultSelectedKeys
-  for (let item of menu) {
-    if (item.route && pathToRegexp(item.route).exec(location.pathname)) {
-      currentMenu = item
-      break
+  componentDidUpdate = (prevProps, prevState) => {
+    if ( this.props.currentMenuStack.map(item => item.id).join('-') != prevProps.currentMenuStack.map(item => item.id).join('-') ) {
+      this.setState({
+        openKeys: this.props.isSiderCollapsed ? [] : this.props.currentMenuStack.map(item => item.id)
+      });
     }
   }
-  const getPathArray = (array, current, pid, id) => {
-    let result = [String(current[id])]
-    const getPath = (item) => {
-      if (item && item[pid]) {
-        result.unshift(String(item[pid]))
-        getPath(queryArray(array, item[pid], id))
-      }
-    }
-    getPath(current)
-    return result
-  }
-  if (currentMenu) {
-    defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'id')
-  }
 
-  return (
-    <Menu
-      {...menuProps}
-      mode={siderFold ? 'vertical' : 'inline'}
-      theme={darkTheme ? 'dark' : 'light'}
-      onClick={handleClickNavMenu}
-      defaultSelectedKeys={defaultSelectedKeys}
-    >
-      {menuItems}
-    </Menu>
-  )
+  render() {
+
+    const {
+      menuTree,
+      currentMenuItem,
+      currentMenuStack,
+      isSiderCollapsed,
+      isThemeDark,
+      onMenuItemSelected
+    } = this.props
+
+    // 递归生成菜单
+    const getMenus = (menuTreeN, isSiderCollapsed, menuParent) => {
+      return menuTreeN.map((item) => {
+        if (item.subitems) {
+          return (
+            <Menu.SubMenu
+              key={item.id}
+              title={<span>
+                {item.icon && <Icon type={item.icon} />}
+                {(isSiderCollapsed && !menuParent) ? '' : item.name}
+              </span>}
+            >
+              {getMenus(item.subitems, isSiderCollapsed, item)}
+            </Menu.SubMenu>
+          )
+        }
+
+        return (
+          <Menu.Item key={item.id}>
+            {item.icon && <Icon type={item.icon} />}
+            <span>{item.name}</span>
+          </Menu.Item>
+        )
+      })
+    }
+
+    const menuItems = getMenus(menuTree, isSiderCollapsed)
+    let currentMenuIdStack = currentMenuStack.map(item => item.id)
+
+    const responsiveProps = isSiderCollapsed ? {} : {
+      openKeys: this.state.openKeys
+    }
+
+    return (
+      <Menu
+        {...responsiveProps}
+        mode={isSiderCollapsed ? 'vertical' : 'inline'}
+        theme={isThemeDark ? 'dark' : 'light'}
+        onOpenChange={this.handleMenuOpen}
+        selectedKeys={currentMenuIdStack}
+        onSelect={onMenuItemSelected}
+        inlineCollapsed={isSiderCollapsed}
+      >
+        {menuItems}
+      </Menu>
+    )
+  }
 }
 
+
 Menus.propTypes = {
-  menu: PropTypes.array,
-  siderFold: PropTypes.bool,
-  darkTheme: PropTypes.bool,
-  handleClickNavMenu: PropTypes.func,
-  navOpenKeys: PropTypes.array,
-  changeOpenKeys: PropTypes.func,
+  menuTree: PropTypes.array,
+  // menu item {
+  //   "name": "Dashboard",   // 标题
+  //   "route": "/dashboard", // URL
+  //   "icon": "laptop",      // icon
+  //   "includePermissions": [ "GOODS_VIEW", "GOODS_EDIT" ], // 用户只要具备其中一个权限，就可以看到此菜单
+  //   "whitelistRoles": [ "SYS" ], // 只有某些角色可以看到此菜单
+  //   "blacklistRoles": [ "SYS" ], // 只有某些角色看不到此菜单，建议`whitelistRoles`和`blacklistRoles`针对某个菜单同时只使用一个
+  //   "subitems": [], // 子菜单列表
+  // }
+  currentMenuItem: PropTypes.object,
+  currentMenuStack: PropTypes.array,
+  isSiderCollapsed: PropTypes.bool,
+  isThemeDark: PropTypes.bool,
+  onMenuItemSelected: PropTypes.func,
 }
 
 export default Menus

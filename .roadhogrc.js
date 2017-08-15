@@ -2,7 +2,7 @@ const path = require('path')
 const { version } = require('./package.json')
 
 const svgSpriteDirs = [
-  path.resolve(__dirname, 'src/svg/'),
+  path.resolve(__dirname, 'src/assets/svg/'),
   require.resolve('antd').replace(/index\.js$/, '')
 ]
 

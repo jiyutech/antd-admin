@@ -1,5 +1,6 @@
 const enums = require('./enums')
 const theme = require('./theme')
+const menus = require('./menus')
 
 const APIV1 = '/api/v1'
 const APIV2 = '/api/v2'
@@ -23,10 +24,10 @@ module.exports = {
     posts: `${APIV1}/posts`,
     user: `${APIV1}/user/:id`,
     dashboard: `${APIV1}/dashboard`,
-    menus: `${APIV1}/menus`,
     v1test: `${APIV1}/test`,
     v2test: `${APIV2}/test`,
   },
   enums,
-  color: theme.color
+  menus,
+  color: theme.color,
 }

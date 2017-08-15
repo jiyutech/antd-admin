@@ -3,20 +3,22 @@ import PropTypes from 'prop-types'
 import { Router } from 'dva/router'
 import App from './core/routes/app'
 
-const registerModel = (app, model) => {
-  if (!(app._models.filter(m => m.namespace === model.namespace).length === 1)) {
-    app.model(model)
-  }
-}
-
 const Routers = function ({ history, app }) {
+
+  const registerModel = (model) => {
+    if (!(app._models.filter(m => m.namespace === model.namespace).length === 1)) {
+      app.model(model)
+    }
+  }
+
   const routes = [
     {
       path: '/',
       component: App,
       getIndexRoute (nextState, cb) {
         require.ensure([], (require) => {
-          registerModel(app, require('./core/models/dashboard'))
+          registerModel(require('./core/models/dashboard'))
+          registerModel(require('./core/models/layout'))
           cb(null, { component: require('./core/routes/dashboard/') })
         }, 'dashboard')
       },
@@ -25,7 +27,7 @@ const Routers = function ({ history, app }) {
           path: 'dashboard',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./core/models/dashboard'))
+              registerModel(require('./core/models/dashboard'))
               cb(null, require('./core/routes/dashboard/'))
             }, 'dashboard')
           },
@@ -33,7 +35,7 @@ const Routers = function ({ history, app }) {
           path: 'user',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./core/models/user'))
+              registerModel(require('./core/models/user'))
               cb(null, require('./core/routes/user/'))
             }, 'user')
           },
@@ -41,7 +43,7 @@ const Routers = function ({ history, app }) {
           path: 'user/:id',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./core/models/user/detail'))
+              registerModel(require('./core/models/user/detail'))
               cb(null, require('./core/routes/user/detail/'))
             }, 'user-detail')
           },
@@ -49,7 +51,7 @@ const Routers = function ({ history, app }) {
           path: 'login',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./core/models/login'))
+              registerModel(require('./core/models/login'))
               cb(null, require('./core/routes/login/'))
             }, 'login')
           },
@@ -127,7 +129,7 @@ const Routers = function ({ history, app }) {
           path: 'post',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              registerModel(app, require('./core/models/post'))
+              registerModel(require('./core/models/post'))
               cb(null, require('./core/routes/post/'))
             }, 'post')
           },
@@ -135,7 +137,7 @@ const Routers = function ({ history, app }) {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
-              cb(null, require('./core/routes/error/'))
+              cb(null, require('./core/components/Error/'))
             }, 'error')
           },
         },

@@ -7,31 +7,49 @@ import Menus from './Menu'
 
 const SubMenu = Menu.SubMenu
 
-const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu }) => {
-  let handleClickMenu = e => e.key === 'logout' && logout()
+const Header = ( layoutProps ) => {
+
+  const {
+    loginInfo,
+    menuTree,
+    currentMenuItem,
+    currentMenuStack,
+    isSiderCollapsed,
+    isSiderThemeDark,
+    onSideMenuItemSelected,
+    isMobileNavbarMode,
+    isMobileMenuPopoverVisible,
+    onLogout,
+    onToggleFoldSider,
+    onToggleMobileMenuPopoverVisible
+  } = layoutProps
+
+  let handleClickMenu = e => e.key === 'logout' && onLogout()
+
   const menusProps = {
-    menu,
-    siderFold: false,
-    darkTheme: false,
-    isNavbar,
-    handleClickNavMenu: switchMenuPopover,
-    location,
-    navOpenKeys,
-    changeOpenKeys,
+    menuTree,
+    currentMenuItem,
+    currentMenuStack,
+    isSiderCollapsed,
+    isThemeDark: isSiderThemeDark,
+    onMenuItemSelected: onSideMenuItemSelected,
   }
+
+  console.error(loginInfo);
+
   return (
     <div className={styles.header}>
-      {isNavbar
-        ? <Popover placement="bottomLeft" onVisibleChange={switchMenuPopover} visible={menuPopoverVisible} overlayClassName={styles.popovermenu} trigger="click" content={<Menus {...menusProps} />}>
+      {isMobileNavbarMode
+        ? <Popover placement="bottomLeft" onVisibleChange={onToggleMobileMenuPopoverVisible} visible={isMobileMenuPopoverVisible} overlayClassName={styles.popovermenu} trigger="click" content={<Menus {...menusProps} />}>
           <div className={styles.button}>
             <Icon type="bars" />
           </div>
         </Popover>
         : <div
           className={styles.button}
-          onClick={switchSider}
+          onClick={onToggleFoldSider}
         >
-          <Icon type={classnames({ 'menu-unfold': siderFold, 'menu-fold': !siderFold })} />
+          <Icon type={classnames({ 'menu-unfold': isSiderCollapsed, 'menu-fold': !isSiderCollapsed })} />
         </div>}
       <div className={styles.rightWarpper}>
         <div className={styles.button}>
@@ -44,31 +62,17 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
             }}
             title={<span>
               <Icon type="user" />
-              {user.username}
+              {loginInfo.username}
             </span>}
           >
             <Menu.Item key="logout">
-              Sign out
+              退出登录
             </Menu.Item>
           </SubMenu>
         </Menu>
       </div>
     </div>
   )
-}
-
-Header.propTypes = {
-  menu: PropTypes.array,
-  user: PropTypes.object,
-  logout: PropTypes.func,
-  switchSider: PropTypes.func,
-  siderFold: PropTypes.bool,
-  isNavbar: PropTypes.bool,
-  menuPopoverVisible: PropTypes.bool,
-  location: PropTypes.object,
-  switchMenuPopover: PropTypes.func,
-  navOpenKeys: PropTypes.array,
-  changeOpenKeys: PropTypes.func,
 }
 
 export default Header

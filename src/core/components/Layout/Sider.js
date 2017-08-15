@@ -5,38 +5,40 @@ import { config } from 'utils'
 import styles from './Layout.less'
 import Menus from './Menu'
 
-const Sider = ({ siderFold, darkTheme, location, changeTheme, navOpenKeys, changeOpenKeys, menu }) => {
+const Sider = ({
+  menuTree,
+  currentMenuItem,
+  currentMenuStack,
+  isSiderCollapsed,
+  isSiderThemeDark,
+  onSideMenuItemSelected,
+}) => {
   const menusProps = {
-    menu,
-    siderFold,
-    darkTheme,
-    location,
-    navOpenKeys,
-    changeOpenKeys,
+    menuTree,
+    currentMenuItem,
+    currentMenuStack,
+    isSiderCollapsed,
+    isThemeDark: isSiderThemeDark,
+    onMenuItemSelected: onSideMenuItemSelected,
   }
   return (
     <div>
       <div className={styles.logo}>
         <img alt={'logo'} src={config.logo} />
-        {siderFold ? '' : <span>{config.name}</span>}
+        {isSiderCollapsed ? '' : <span>{config.name}</span>}
       </div>
       <Menus {...menusProps} />
-      {!siderFold ? <div className={styles.switchtheme}>
-        <span><Icon type="bulb" />Switch Theme</span>
-        <Switch onChange={changeTheme} defaultChecked={darkTheme} checkedChildren="Dark" unCheckedChildren="Light" />
-      </div> : ''}
     </div>
   )
 }
 
 Sider.propTypes = {
-  menu: PropTypes.array,
-  siderFold: PropTypes.bool,
-  darkTheme: PropTypes.bool,
-  location: PropTypes.object,
-  changeTheme: PropTypes.func,
-  navOpenKeys: PropTypes.array,
-  changeOpenKeys: PropTypes.func,
+  menuTree: PropTypes.array,
+  currentMenuItem: PropTypes.object,
+  currentMenuStack: PropTypes.array,
+  isSiderCollapsed: PropTypes.bool,
+  isSiderThemeDark: PropTypes.bool,
+  onSideMenuItemSelected: PropTypes.func,
 }
 
 export default Sider

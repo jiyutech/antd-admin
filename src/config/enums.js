@@ -1,7 +1,7 @@
 const EnumRoleType = {
+  SYS: 'sys',
   ADMIN: 'admin',
-  DEFAULT: 'admin',
-  DEVELOPER: 'developer',
+  DEFAULT: 'op',
 }
 
 module.exports = {

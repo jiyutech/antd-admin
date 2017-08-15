@@ -1,6 +1,7 @@
 const qs = require('qs')
 const Mock = require('mockjs')
 const config = require('../config')
+const EnumRoleType = config.enums.EnumRoleType
 
 const { apiPrefix } = config
 
@@ -26,22 +27,16 @@ let usersListData = Mock.mock({
 
 let database = usersListData.data
 
-const EnumRoleType = {
-  ADMIN: 'admin',
-  DEFAULT: 'guest',
-  DEVELOPER: 'developer',
-}
-
 const userPermission = {
   DEFAULT: {
-    visit: ['1', '2', '21', '7', '5', '51', '52', '53'],
-    role: EnumRoleType.DEFAULT,
+    permissionPacks: ['GOODS_VIEW', 'GOODS_POST'],
+    roleTypeCode: EnumRoleType.DEFAULT,
   },
   ADMIN: {
-    role: EnumRoleType.ADMIN,
+    roleTypeCode: EnumRoleType.ADMIN,
   },
-  DEVELOPER: {
-    role: EnumRoleType.DEVELOPER,
+  SYS: {
+    roleTypeCode: EnumRoleType.SYS,
   },
 }
 
@@ -58,9 +53,9 @@ const adminUsers = [
     permissions: userPermission.DEFAULT,
   }, {
     id: 2,
-    username: '吴彦祖',
-    password: '123456',
-    permissions: userPermission.DEVELOPER,
+    username: 'sys',
+    password: 'sys',
+    permissions: userPermission.SYS,
   },
 ]
 
@@ -128,7 +123,8 @@ module.exports = {
     if (response.success) {
       const userItem = adminUsers.filter(_ => _.id === token.id)
       if (userItem.length > 0) {
-        user.permissions = userItem[0].permissions
+        user.roleTypeCode = userItem[0].permissions.roleTypeCode
+        user.permissionUnits = userItem[0].permissions.permissionPacks
         user.username = userItem[0].username
         user.id = userItem[0].id
       }
