@@ -18,8 +18,8 @@ const Sider = ({
     currentMenuItem,
     currentMenuStack,
     isSiderCollapsed,
-    isThemeDark: isSiderThemeDark,
-    onMenuItemSelected: onSideMenuItemSelected,
+    isSiderThemeDark: isSiderThemeDark,
+    onSideMenuItemSelected: onSideMenuItemSelected,
   }
   return (
     <div>

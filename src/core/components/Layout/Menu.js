@@ -37,12 +37,15 @@ class Menus extends React.Component {
       currentMenuItem,
       currentMenuStack,
       isSiderCollapsed,
-      isThemeDark,
-      onMenuItemSelected
+      isSiderThemeDark,
+      isMobileNavbarMode,
+      onSideMenuItemSelected
     } = this.props
 
+    const isInlineCollapsed = isMobileNavbarMode ? false : isSiderCollapsed;
+
     // 递归生成菜单
-    const getMenus = (menuTreeN, isSiderCollapsed, menuParent) => {
+    const getMenus = (menuTreeN, isInlineCollapsed, menuParent) => {
       return menuTreeN.map((item) => {
         if (item.subitems) {
           return (
@@ -50,10 +53,10 @@ class Menus extends React.Component {
               key={item.id}
               title={<span>
                 {item.icon && <Icon type={item.icon} />}
-                {(isSiderCollapsed && !menuParent) ? '' : item.name}
+                {(isInlineCollapsed && !menuParent) ? '' : item.name}
               </span>}
             >
-              {getMenus(item.subitems, isSiderCollapsed, item)}
+              {getMenus(item.subitems, isInlineCollapsed, item)}
             </Menu.SubMenu>
           )
         }
@@ -69,22 +72,23 @@ class Menus extends React.Component {
       })
     }
 
-    const menuItems = getMenus(menuTree, isSiderCollapsed)
+    const menuItems = getMenus(menuTree, isInlineCollapsed)
     let currentMenuIdStack = currentMenuStack.map(item => item.id)
 
-    const responsiveProps = isSiderCollapsed ? {} : {
-      defaultOpenKeys: this.state.openKeys
+    const responsiveProps = isSiderCollapsed ? {
+    } : {
+      defaultOpenKeys: this.state.openKeys,
     }
 
     return (
       <Menu
         {...responsiveProps}
-        mode={isSiderCollapsed ? 'vertical' : 'inline'}
-        theme={isThemeDark ? 'dark' : 'light'}
+        mode={'inline'}
+        theme={isSiderThemeDark ? 'dark' : 'light'}
         onOpenChange={this.handleMenuOpen}
         defaultSelectedKeys={currentMenuIdStack}
-        onSelect={onMenuItemSelected}
-        inlineCollapsed={isSiderCollapsed}
+        onSelect={onSideMenuItemSelected}
+        inlineCollapsed={isInlineCollapsed}
       >
         {menuItems}
       </Menu>
@@ -107,8 +111,9 @@ Menus.propTypes = {
   currentMenuItem: PropTypes.object,
   currentMenuStack: PropTypes.array,
   isSiderCollapsed: PropTypes.bool,
-  isThemeDark: PropTypes.bool,
-  onMenuItemSelected: PropTypes.func,
+  isSiderThemeDark: PropTypes.bool,
+  isMobileNavbarMode: PropTypes.bool,
+  onSideMenuItemSelected: PropTypes.func,
 }
 
 export default Menus

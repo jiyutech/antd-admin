@@ -2,6 +2,7 @@ import config from 'config'
 const { menus, prefix, openPages } = config
 import lodash from 'lodash'
 import pathToRegexp from 'path-to-regexp'
+import * as accountService from 'services/account'
 
 // 深度优先遍历菜单树
 function dfTravelMenu(items, dealWith, parentItem){
@@ -32,7 +33,7 @@ export default {
     // 侧边栏是否已收起
     isSiderCollapsed: window.localStorage.getItem(`${prefix}isSiderCollapsed`) === 'true',
     // 侧边栏是否使用暗色主题
-    isSiderThemeDark: false,
+    isSiderThemeDark: true,
     // 移动设备下，当前是否显示菜单浮层
     isMobileMenuPopoverVisible: false,
 
@@ -51,7 +52,7 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {  // eslint-disable-line
+    * fetch({ payload }, { call, put }) {  // eslint-disable-line
       yield put({ type: 'updateState' });
     },
 
@@ -59,7 +60,7 @@ export default {
       const { app } = yield (select(_ => _))
       const isMobileNavbarMode = document.body.clientWidth < 769
       if (isMobileNavbarMode !== app.isMobileNavbarMode) {
-        yield put({ type: 'handleNavbar', payload: isMobileNavbarMode })
+        yield put({ type: 'handleNavbarMobileModeChange', payload: isMobileNavbarMode })
       }
     },
 
@@ -86,7 +87,7 @@ export default {
       }
     },
 
-    handleNavbar (state, { payload }) {
+    handleNavbarMobileModeChange (state, { payload }) {
       return {
         ...state,
         isMobileNavbarMode: payload,
@@ -94,33 +95,32 @@ export default {
     },
 
     refreshMenu (state, payload) {
-      let userRole = payload.roleTypeCode
-      let userPermissions = payload.permissionUnits || []
+      const { roleTypeCode, permissionUnits } = accountService.getLoginInfoFromLocal()
       let menuTree = lodash.cloneDeep(menus)
       let currentMenuItem
       let currentMenuStack = []
 
       // 权限过滤
       // 标记无权限节点
-      dfTravelMenu( state.menuTree, (item, parentItem)=>{
+      dfTravelMenu( menuTree, (item, parentItem)=>{
         var noPermission = false;
         // 白名单角色处理
-        if ( item.whitelistRoles && item.whitelistRoles.indexOf(userRole) == -1 ) item.noPermission = true;
+        if ( item.whitelistRoles && item.whitelistRoles.indexOf(roleTypeCode) == -1 ) item.noPermission = true;
         // 黑名单角色处理
-        else if ( item.blacklistRoles && item.blacklistRoles.indexOf(userRole) != -1 ) item.noPermission = true;
+        else if ( item.blacklistRoles && item.blacklistRoles.indexOf(roleTypeCode) != -1 ) item.noPermission = true;
         // 权限包检查
-        else if ( item.includePermissions && !lodash.pull( item.includePermissions, userPermissions ).length ) item.noPermission = true;
+        else if ( item.includePermissions && !lodash.pull( item.includePermissions, permissionUnits ).length ) item.noPermission = true;
         // 标记无权限的有子节点（子节点都没有权限的话，父节点也要删除）
         if ( item.subitems && !item.subitems.filter( item => !item.noPermission).length ) item.noPermission = true;
       } )
       // 删除无权限菜单项
-      state.menuTree = state.menuTree.filter( item => !item.noPermission)
-      bfTravelMenu(state.menuTree, (item, parentItem)=>{
+      menuTree = menuTree.filter( item => !item.noPermission)
+      bfTravelMenu(menuTree, (item, parentItem)=>{
         if ( item.subitems ) item.subitems = item.subitems.filter( item => !item.noPermission)
       })
 
       // 寻找选中路由
-      dfTravelMenu( state.menuTree, (item, parentItem)=>{
+      dfTravelMenu( menuTree, (item, parentItem)=>{
         if (item.route && pathToRegexp(item.route).exec(location.pathname)) {
           currentMenuItem = item
           currentMenuStack = parentItem ? [parentItem, item] : [item]

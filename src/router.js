@@ -31,12 +31,21 @@ const Routers = function ({ history, app }) {
               cb(null, require('./core/routes/dashboard/'))
             }, 'dashboard')
           },
-        }, {
+        },
+        {
+          path: 'account',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(require('./core/models/account'))
+              cb(null, require('./core/routes/account/'))
+            }, 'account')
+          },
+        },{
           path: 'user',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {
               registerModel(require('./core/models/user'))
-              cb(null, require('./core/routes/user/'))
+              cb(null, require('./core/routes/user'))
             }, 'user')
           },
         }, {

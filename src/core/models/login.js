@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router'
 import { queryURL } from 'utils'
-import { login } from 'services/login'
+import * as accountService from 'services/account'
 
 export default {
   namespace: 'login',
@@ -13,18 +13,21 @@ export default {
       payload,
     }, { put, call }) {
       yield put({ type: 'showLoginLoading' })
-      const data = yield call(login, payload)
+      const { success, data, errorMessage, errorCode } = yield call(accountService.login, {
+        username: payload.username,
+        password: payload.password
+      })
       yield put({ type: 'hideLoginLoading' })
-      if (data.success) {
+      if (success) {
+        accountService.storeLoginInfoLocally( data )
         const from = queryURL('from')
-        yield put({ type: 'app/query' })
         if (from) {
           yield put(routerRedux.push(from))
         } else {
           yield put(routerRedux.push('/dashboard'))
         }
       } else {
-        throw data
+        throw errorMessage
       }
     },
   },

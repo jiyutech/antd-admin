@@ -100,20 +100,29 @@ export default function request (options) {
       success: true,
       message: statusText,
       statusCode: status,
-      ...data,
+      data: data,
+      ...data // 临时兼容Demo代码
     }
   }).catch((error) => {
     const { response } = error
     let msg
     let statusCode
+    let errorCode
     if (response && response instanceof Object) {
       const { data, statusText } = response
       statusCode = response.status
-      msg = data.message || statusText
+      msg = data.errorMessage || statusText
+      errorCode = data.errorCode
     } else {
       statusCode = 600
-      msg = error.message || 'Network Error'
+      msg = data.errorMessage || 'Network Error'
     }
-    return { success: false, statusCode, message: msg }
+    return {
+      success: false,
+      message: msg,
+      statusCode,
+      errorCode: errorCode,
+      errorMessage: msg
+    }
   })
 }

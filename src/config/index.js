@@ -1,9 +1,14 @@
 const enums = require('./enums')
 const theme = require('./theme')
 const menus = require('./menus')
+const localStorageKeys = require('./ls-keys')
 
 const APIV1 = '/api/v1'
 const APIV2 = '/api/v2'
+
+const apiBase = {
+  main: 'http://test-paradise.jiyutech.net'
+}
 
 module.exports = {
   name: 'AntD Admin',
@@ -13,7 +18,9 @@ module.exports = {
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
   YQL: ['http://www.zuimeitianqi.com'],
-  CORS: [],
+  CORS: [
+    `${apiBase.main}`,
+  ],
   openPages: ['/login'],
   apiPrefix: '/api/v1',
   api: {
@@ -27,7 +34,9 @@ module.exports = {
     v1test: `${APIV1}/test`,
     v2test: `${APIV2}/test`,
   },
+  apiBase,
   enums,
   menus,
+  localStorageKeys,
   color: theme.color,
 }

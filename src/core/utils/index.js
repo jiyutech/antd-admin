@@ -3,6 +3,7 @@ import classnames from 'classnames'
 import lodash from 'lodash'
 import config from 'config'
 import request from './request'
+import localStorage from './localstorage'
 
 // 连字符转驼峰
 String.prototype.hyphenToHump = function () {
@@ -105,4 +106,5 @@ module.exports = {
   queryURL,
   queryArray,
   arrayToTree,
+  localStorage,
 }

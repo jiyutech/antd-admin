@@ -93,7 +93,7 @@ var menuTree = [{
   }]
 }, {
   "name": "账号管理",
-  "route": "/accounts",
+  "route": "/account",
   "icon": "lock",
   "whitelistRoles": [ EnumRoleType.SYS, EnumRoleType.ADMIN ]
 }]

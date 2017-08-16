@@ -22,44 +22,6 @@ const Layout = ( layoutProps ) => {
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
 
-  // const siderProps = {
-  //   menuTree,
-  //   currentMenuItem,
-  //   currentMenuStack,
-  //   isSiderCollapsed,
-  //   isSiderThemeDark,
-  //   onSideMenuItemSelected: onSideMenuItemSelected,
-  //   // changeTheme () {
-  //   //   dispatch({ type: 'layout/switchTheme' })
-  //   // },
-  //   // changeOpenKeys (openKeys) {
-  //   //   window.localStorage.setItem(`${prefix}navOpenKeys`, JSON.stringify(openKeys))
-  //   //   dispatch({ type: 'layout/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
-  //   // },
-  // }
-  //
-  // const headerProps = {
-  //   loginInfo,
-  //   menuTree,
-  //   currentMenuItem,
-  //   currentMenuStack,
-  //   isSiderCollapsed,
-  //   isMobileNavbarMode,
-  //   // isMobileMenuPopoverVisible,
-  //   // navOpenKeys,
-  //   // switchMenuPopover () {
-  //   //   dispatch({ type: 'layout/toggleMobileMenuPopoverVisible' })
-  //   // },
-  //   // logout () {
-  //   //   dispatch({ type: 'app/logout' })
-  //   // },
-  //   // switchSider () {
-  //   //   dispatch({ type: 'layout/switchSider' })
-  //   // },
-  //   // changeOpenKeys (openKeys) {
-  //   //   dispatch({ type: 'layout/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
-  //   // },
-  // }
   const {
     children,
     loading,

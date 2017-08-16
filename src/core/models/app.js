@@ -5,7 +5,7 @@ import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import config from 'config'
 import { EnumRoleType } from 'enums'
-import { query, logout } from 'services/app'
+import * as accountService from 'services/account'
 import pathToRegexp from 'path-to-regexp'
 import lodash from 'lodash'
 
@@ -14,7 +14,7 @@ const { prefix } = config
 export default {
   namespace: 'app',
   state: {
-    user: {
+    loginInfo: {
       roleTypeCode: '',
       permissionUnits: [],
     },
@@ -22,27 +22,28 @@ export default {
   subscriptions: {
 
     setup ({ dispatch }) {
-      dispatch({ type: 'query' })
+      dispatch({ type: 'checkLogin' })
     },
 
   },
   effects: {
 
-    * query ({
+    * checkLogin ({
       payload,
     }, { call, put }) {
-      const { success, user } = yield call(query, payload)
-      if (success && user) {
+      let res
+      try {
+        res = yield call(accountService.getLoginInfo)
+      } catch(e) { res = {} }
+      const { success, data: loginInfo, errorMessage } = res
+      if (success && loginInfo) {
+        accountService.storeLoginInfoLocally( loginInfo )
+        let loginInfo = accountService.getLoginInfoFromLocal()
         yield put({
           type: 'updateState',
-          payload: {
-            user,
-          },
+          payload: { loginInfo, },
         })
-        yield put({ type: 'layout/refreshMenu', payload: {
-          roleTypeCode: user.roleTypeCode,
-          permissionUnits: user.permissionUnits
-        } })
+        yield put({ type: 'layout/refreshMenu'})
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/dashboard'))
         }
@@ -55,11 +56,11 @@ export default {
     * logout ({
       payload,
     }, { call, put }) {
-      const data = yield call(logout, parse(payload))
-      if (data.success) {
-        yield put({ type: 'query' })
+      const {success, errorMessage } = yield call(accountService.logout, parse(payload))
+      if (success) {
+        yield put({ type: 'checkLogin' })
       } else {
-        throw (data)
+        throw errorMessage
       }
     },
 

@@ -26,16 +26,12 @@ function checkNavLoadingBarState( globalLoading ){
 
 const App = ({ children, dispatch, app, layout, loading, location }) => {
 
-  const {
-    user
-  } = app
-
   checkNavLoadingBarState( loading.global );
 
   const layoutProps = {
     children,
     loading,
-    loginInfo: user,
+    loginInfo: app.loginInfo,
     menuTree: layout.menuTree,
     currentMenuItem: layout.currentMenuItem,
     currentMenuStack: layout.currentMenuStack,
@@ -51,6 +47,9 @@ const App = ({ children, dispatch, app, layout, loading, location }) => {
     },
     onToggleMobileMenuPopoverVisible() {
       dispatch({ type: 'layout/toggleMobileMenuPopoverVisible' })
+    },
+    onLogout(){
+      dispatch({ type: 'app/logout' })
     }
   }
 

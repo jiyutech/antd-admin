@@ -26,19 +26,10 @@ const Header = ( layoutProps ) => {
 
   let handleClickMenu = e => e.key === 'logout' && onLogout()
 
-  const menusProps = {
-    menuTree,
-    currentMenuItem,
-    currentMenuStack,
-    isSiderCollapsed,
-    isThemeDark: isSiderThemeDark,
-    onMenuItemSelected: onSideMenuItemSelected,
-  }
-
   return (
     <div className={styles.header}>
       {isMobileNavbarMode
-        ? <Popover placement="bottomLeft" onVisibleChange={onToggleMobileMenuPopoverVisible} visible={isMobileMenuPopoverVisible} overlayClassName={styles.popovermenu} trigger="click" content={<Menus {...menusProps} />}>
+        ? <Popover placement="bottomLeft" onVisibleChange={onToggleMobileMenuPopoverVisible} visible={isMobileMenuPopoverVisible} overlayClassName={styles.popovermenu} trigger="click" content={<Menus {...layoutProps} />}>
           <div className={styles.button}>
             <Icon type="bars" />
           </div>
@@ -60,7 +51,7 @@ const Header = ( layoutProps ) => {
             }}
             title={<span>
               <Icon type="user" />
-              {loginInfo.username}
+              {loginInfo.name}
             </span>}
           >
             <Menu.Item key="logout">
